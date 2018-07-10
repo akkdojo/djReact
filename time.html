@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>setInterval/time</title>
+
+  <script>
+    var nIntervId;
+
+    function loadClock() {
+      nIntervId = setInterval(flashTime, 1000);
+    }
+
+    function flashTime() {
+      var event = new Date();
+      var oElem = document.getElementById('my_box');
+      oElem.innerHTML=event.toLocaleTimeString('en-US')
+      // oElem.style.color == 'red' ? 'blue' : 'red' is a ternary operator.
+    }
+
+  </script>
+</head>
+
+<body onload="loadClock();">
+  <p id="my_box">
+
+  </p>
+
+  <!-- <button onclick="stopTextColor();">Stop</button> -->
+</body>
+</html>
