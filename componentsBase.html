@@ -16,7 +16,7 @@
 <p>test</p>
 </body>
 </html>
-<script>
+<script type="text/babel">
 
    const Title = (props) => {
       const { text } = props;
@@ -24,10 +24,17 @@
    }
    const App = (props) => {
       return React.createElement('div', null,
+         <p>test</p>,
+// Note this JXS usage; required changing to <scrypt type="text/babel">,
+// and inclusion: <script type="application/javascript" src="https://unpkg.com/babel-standalone@6.26.0/babel.js"
+         <Title text='Title 4!!!!' />,
          React.createElement(Title, { text: 'Title one!' } ),
          React.createElement(Title, { text: 'Title two!!' } ),
          React.createElement(Title, { text: 'Title three!!!' } )
       )
+   }
+   const App2 = (props) =>{
+      return <p>test</p>
    }
       ReactDOM.render(App(),document.getElementById('react-app'));
 </script>
