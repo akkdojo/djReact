@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>checkerBoard 101</title>
+   <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+   <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+   <script type="application/javascript" src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+   <script type="text/babel">
+
+
+   </script>
+   <style>
+      .blackCell{display:inline-block; background-color: black}
+      .redCell{display:inline-block; background-color: red}
+      .row{display:block; }
+      body{padding: 20px}
+      #error{color: palevioletred; padding: 2x; }
+      #gameBox{border:1px darkslategray; margin: 5px}
+   </style>
+</head>
+<body>
+<!--<form action="">-->
+   <!--<label>Enter number of cells per rows and colums:</label><br>-->
+<!--<input type="text" name="userid"><input type="button" value="Enter"></form>
+-->
+   <div id="container"></div>
+<h4 id="error"></h4>
+
+<div id='gameBox'></div>
+</body>
+</html>
+<script type="text/babel">
+const Setup =(props)=>{
+   const color = { color : 'red'};
+   return (
+      <div>
+         <input type="text" value={props.text} id="entry" onChange={activateTyping} />
+      <button onClick={activateLasers}>Activate Lasers </button>
+      </div>
+   );
+};
+const activateLasers = () => {
+   let entry = document.getElementById('entry').value
+   let entryVal = parseInt(entry)
+   if (!entry.match(/^[0-9]+$/) || !(0 < parseInt(entry) < 26)) {
+      document.getElementById('error').innerText = entry + " is not a valid entry. Please enter a number between [1-25]"
+   }
+   else if (0 < entryVal < 26) {
+      let arg = {total: entry}
+      ReactDOM.render(<CheckerBoard {...arg}/>,document.getElementById('gameBox'))
+   }
+}
+   let styles = {
+      row: {class: 'row'},
+      colorA: {class: 'blackCell'},
+      colorB: {class: 'redCell'}
+   }
+   const dynStyle = (size,w=true) =>{
+      let attribs ={height: size}
+      if (w)
+         attribs.width = size;
+      return attribs
+   }
+
+   function CheckerBoard (props) {
+      let size = parseInt(props.total)
+      let cellSize = Math.abs(Math.log(size) ) *Math.floor(200/size)
+      return <div> {[...Array(size).keys()].map((idx) => {
+         let  attribs = { total:size,
+                          rowNum :idx,
+                          cellSize: cellSize
+                          }
+         return <Row {...attribs}/>
+      })}
+      </div>;
+   }
+   function Row (props) {
+      // will take a number from checkBoard : rowNum
+      return <div style={dynStyle(props.cellSize,false)} {...styles.row}>{[...Array(parseInt(props.total)).keys()].map((idx)=>{
+         let td = {chosenAtr: (parseInt(props.rowNum) + idx) % 2 ? styles.colorA : styles.colorB,
+                   cellSize : props.cellSize
+                  }
+         return React.createElement(Cell, td );
+      })} </div>;
+   }
+   function Cell (props) {
+      return <div class='blocks' style={dynStyle(props.cellSize)} { ...props.chosenAtr}></div>
+   }
+   // And feel free to use the following object:
+
+
+const activateTyping = (e) =>{
+
+   console.log("typed" +e.target.value)
+
+   return
+}
+
+   ReactDOM.render(<Setup />,document.getElementById('container'));
+
+</script>
