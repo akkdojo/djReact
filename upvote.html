@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>checkerBoard 101</title>
+   <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+   <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+   <script type="application/javascript" src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+   <script type="text/babel">
+   </script>
+   <style>
+      *{}
+      body{width:600px; margin:auto;padding: 0;}
+      #container{width:500px; margin:0 auto;padding: 0}
+      .circle{display:inline-block; width:60px; height:100% ;overflow: auto;  text-align: center  }
+      .circleText{height:50%; padding-top:30%;
+         font: bold 20px arial serif}
+      .libbase{display:inline-block; width:114px; height: 100% ;overflow: auto; text-align: center }
+      .lib{height:60%; padding-top:15%;
+         font: bold 20px arial serif}
+      .plus{display:inline-block; width:60px; height: 100% ;overflow: auto; }
+      body{padding: 20px}
+      .libBox{
+         background-image: url(upvote.png); height: 60px; width: 240px; border: 1px solid black;background-size: 100%;
+      }
+   </style>
+</head>
+<body>
+<h1>Vote Your JS Library!</h1>
+<div id="container"></div>
+</body>
+</html>
+<script type="text/babel">
+   let libs = [
+      { idx:0, lib: "React",vote:0},{ idx:1,  lib: "Vue",vote:0},{ idx:2,  lib: "Angular",vote:0},{ idx:3,  lib: "Ember",vote:0}
+               ];
+      const Setup =()=>{
+      return <div>{
+         libs.map((each)=>{
+         return eachLib(each)
+      })}
+      </div>
+   };
+   const eachLib =(props)=>{
+      let atr ={id: props.lib};
+      return <div class='libBox'>
+               <div class='circle'>
+                  <div class='circleText' {...atr} >{props.vote}</div></div>
+               <div class='libbase'><div class='lib'>{props.lib}</div></div>
+               <div onClick={()=>clicked(props)}class='plus'></div>
+             </div>
+   };
+   const clicked = (e) => {
+      libs[e.idx].vote +=1
+      console.log(libs[e.idx].vote )
+      update(e)
+      console.log(libs)
+   };
+   const update = (props) =>{
+      let atr ={id: props.lib};
+      document.getElementById(props.lib).innerHTML = libs[props.idx].vote;
+      let needUpdate = false;
+      let size = libs.length
+      for (let j = 0;j<size;j++){
+         for (let i = size-1;i>j;i--) {
+            if (libs[i].vote > libs[i - 1].vote) {
+               needUpdate = true
+                  let swap = libs[i]
+                  libs[i] = libs[i- 1]
+                  libs[i - 1]= swap
+                  let swap2 = libs[i].idx
+                  libs[i].idx =libs[i - 1].idx
+                  libs[i - 1].idx = swap2
+            }
+         }
+      }
+      if (needUpdate)
+         ReactDOM.render(<Setup />,document.getElementById('container'));
+
+   };
+   const activateTyping = (e) =>{
+      console.log("typed" +e.target.value);
+      return
+   };
+   ReactDOM.render(<Setup />,document.getElementById('container'));
+
+</script>
