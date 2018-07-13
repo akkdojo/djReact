@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>upVote</title>
+   <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+   <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+   <script type="application/javascript" src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+   <script type="text/babel">
+   </script>
+   <style>
+      *{}
+      body{width:600px; margin:auto;padding: 0;}
+      #container{width:500px; margin:0 auto;padding: 0}
+      .circle{display:inline-block; width:60px; height:100% ;overflow: auto;  text-align: center  }
+      .circleText{height:50%; padding-top:30%;
+         font: bold 20px arial serif}
+      .libbase{display:inline-block; width:114px; height: 100% ;overflow: auto; text-align: center }
+      .lib{height:60%; padding-top:15%;
+         font: bold 20px arial serif}
+      .plus{display:inline-block; width:60px; height: 100% ;overflow: auto; }
+      body{padding: 20px}
+      .libBox{
+         background-image: url(upvote.png); height: 60px; width: 240px; border: 1px solid black;background-size: 100%;
+      }
+   </style>
+</head>
+<body>
+<h1>Vote Your JS Library!</h1>
+<div id="container"></div>
+</body>
+</html>
+<script type="text/babel">
+   class UpVote extends React.Component {
+      constructor(){
+         super()
+         this.libs = [
+            ["React",0],[ "Vue",0],["Angular",0],[ "Ember",0]
+         ];
+         let tempInfo={}
+         for (let i =0;i<4; i++){
+            tempInfo[i]= {name:this.libs[i][0],vote:this.libs[i][1]}
+         }
+
+         console.log(`${JSON.stringify(tempInfo)}`)
+         this.state={ info: tempInfo}
+
+      }
+      // race conditions here
+      clicked = (idx) => {
+         this.libs[idx][1]+=1
+         this.libs.sort((a,b)=>b[1]-a[1])
+         let tempInfo={}
+         for (let i =0;i<4; i++){
+            tempInfo[i]= {name:this.libs[i][0],vote:this.libs[i][1]}
+         }
+         this.setState({
+            info:tempInfo
+            })
+         this.forceUpdate()
+      }
+
+      render() {
+         return <div>
+            {this.libs.map((lb, idx)=>{
+               return <div className='libBox'>
+                  <div className='circle'>
+                     <div className='circleText'  >{this.state.info[idx].vote}</div>
+                  </div>
+                  <div className='libbase'>
+                     <div className='lib'>{this.state.info[idx].name}</div>
+                  </div>
+                  <div onClick={() => this.clicked(idx)} className='plus'></div>
+               </div>
+            })
+            }
+         </div>
+      }
+   }
+   ReactDOM.render(<UpVote />,document.querySelector('#container'));
+
+</script>
