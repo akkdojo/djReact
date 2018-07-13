@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>checkerBoard 101</title>
+   <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+   <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+   <script type="application/javascript" src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+      <script type="text/babel">
+   </script>
+   <style>
+      *{}
+      body{width:600px; margin:0 auto;padding: 0;}
+      #container{display:flex; width:620px; height: auto;  margin:0 auto;padding: 0}
+      .boxContainer{display:flex;  flex-direction: column; align-items: flex-start;   justify-content: center;
+         margin:0 auto;padding: 0; width: 90%}
+      #addCounter{display:flex;  width:120px; height: 28px;  flex-grow: 1;justify-content: center; margin-top: 20px}
+      .box {display: flex; align-items: flex-start; justify-content: center; align-self: center;
+         flex-direction: column;width:250px; height: 80px;  margin-top:20px;border: 1px solid black}
+      .top{display: flex; flex-direction: row; flex-wrap : nowrap; flex-grow: 3; justify-content: space-between; width:100%;
+            }
+      .count{display: inline-flex; height: 60%;font: bold 25px arial serif; margin: 5px -15px 0 0;  border : 0;}
+      .close{display: inline-flex; height: 60%;font: bold 12pt arial serif; border : 0; align-self: right; margin: 1px 1px 0 0}
+      .bottom{display:flex;flex-direction: row; justify-content: center; align-items: flex-start;flex-grow: 2}
+      .plus{display:inline-flex; justify-content:center;width:100px; height: 26px; box-shadow: 1px 1px; margin: auto 0; margin-left: 10px;
+         ;align-items: flex-start;}
+      .spacer{display:inline-block; width:15px;}
+   </style>
+</head>
+<body>
+<div id="container"></div>
+</body>
+</html>
+<script type="text/babel">
+   class UpVote extends React.Component {
+      constructor(){
+         super()
+         this.counters = [0,0];
+         this.trackers = [ {0:0},{1:0}]
+         this.state = { counters: this.counters, trackers: this.trackers}
+         this.click = this.click.bind(this)
+      }
+      componentDidMount() {
+         console.log('here');
+      }
+
+      click(){
+         let tempAry = this.state.trackers.slice()
+         let tempObj = {}
+         tempObj[this.state.trackers.length] =0
+         tempAry.push(tempObj)
+         this.setState({
+            trackers: tempAry })
+         this.forceUpdate()
+         console.log(`the newly added trackers: ${JSON.stringify(this.state.trackers)}`)
+      }
+      
+      render() {
+            return <div className='boxContainer'><button onClick={this.click} id="addCounter"> Add Counter</button>
+               {this.state.trackers.map((tracker,i)=>{
+               return <div className='box'>
+                     <div className='top'><div></div><h1 className='count'>{this.state.trackers[i][i]}</h1>
+                        <button onClick={()=>{
+                           let tmp =[...this.state.trackers.slice(0,i),...this.state.trackers.slice(i+1)]
+                           for (let j=i; j< tmp.length; j++){
+                              // object key's must be reassigned. because keys: mapped to indices and an index is deleted
+                              let saved = tmp[j][j+1]
+                              tmp[j]={}
+                              tmp[j][j] = saved
+                           }
+                           let tmp2 = [...tmp]
+                           this.setState({trackers: tmp2 })
+                           this.forceUpdate()
+                        }}  type='button' className='close'>X</button></div>
+                     <div className='bottom'>
+                        <button onClick={()=>{this.state.trackers[i][i] +=1;
+                        this.forceUpdate()
+                        }} className='plus' type="button"> Increment</button>
+                        <div className='spacer'></div>
+                        <button onClick={()=>{this.state.trackers[i][i] -=1;
+                           this.forceUpdate()
+                        }} className='plus' type="button"> Decrement</button>
+                     </div>
+                  </div>
+               })}
+            </div>
+      }
+   }
+
+   ReactDOM.render(<UpVote/>,document.querySelector('#container'));
+
+</script>
+
