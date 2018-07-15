@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+   <meta charset="UTF-8">
+   <title>TicTacToe!</title>
+   <head>
+       <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+       <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+       <script type="application/javascript" src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+
+    <style>
+      body {
+         margin: 40px;
+      }
+
+      .box {
+         background-color: #444;
+         color: #fff;
+         border-radius: 5px;
+         font-size: 400%;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-family:"comic sans ms", "Arial Black",sans-serif;
+
+         font-weight: bolder;
+      }
+
+      .wrapper {
+         width: 350px;
+         display: grid;
+         grid-gap: 10px;
+         grid-template-columns: repeat(3, 112px);
+         grid-template-rows: 112px 112px 112px;
+         grid-auto-flow: row;
+      }
+      .shell{
+         width:90%;
+         height:90%;
+         padding: 0;
+          display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: space-around;
+      }
+      .button{
+          margin: 50px 15px 10px 15px;
+          padding: 15px 32px;
+          font-family:"comic sans ms", "Arial Black",sans-serif;
+          font-size: 200%;
+          font-weight: bolder;
+          background-color: slategrey;
+          color: ghostwhite;
+      }
+      .boundary{
+         width:700px;
+         height:700px;
+         padding: 0;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         margin-left: 50px;
+      }
+      .mark{
+         color:black;
+      }
+      .inside{
+         width:50px;
+         height:50px;
+         padding:0;
+         margin:0
+      }
+        </style>
+    </head>
+    <body>
+    <div class="boundary">
+
+    </div>
+    </body>
+</html>
+<script type="text/babel">
+
+class TicTac extends React.Component {
+    constructor() {
+        super()
+        this.state = {gameView: {}}
+        this.state.gameLog= '39425'
+
+        this.ref2 =[...Array(...'789456123')]
+       console.log(`${(JSON.stringify(this.ref2))}`)
+        for (let i=0; i<=8;i++){
+          let slot = this.ref2[i]
+          this.state.gameView[slot]= ''
+          let pos = this.state.gameLog.indexOf(slot)
+          if (pos>=0 ){
+             let XorO = pos %2
+             this.state.gameView[slot] = XorO ? 'O' : 'X'
+          }
+       }
+    }
+   componentDidMount() {
+      this.setState({ isLoading: true });
+      let API = "http://127.0.0.1:5000/"
+      let DEFAULT_QUERY = "connect"
+      fetch(API + DEFAULT_QUERY)
+         .then(response => response.json())
+         .then(data => {
+            this.setState({ hits: data.hits, isLoading: false })
+            console.log( `${JSON.stringify(data)}`, 'original response',`${JSON.stringify(data)}`)
+         } )
+         .catch(error => this.setState({ error, isLoading: false }));
+   }
+   start_game =()=>{
+
+}
+   switch_game =()=>{
+
+}
+    shrink =() =>{
+        let tmpStr = ''
+        for (let i = 0; i<10; i++)
+            if (this.state.gameView.charAt(i)!=='0')
+                tmpStr += this.state.gameView.charAt(i)
+        return tmpStr
+        }
+   // Read the gameLog from outside, convert to gameView
+    expand =(gameStr)=>{
+        gameStr.sort()
+        let tmpStr = ''
+        for (let i = 0; i<10; i++)
+            tmpStr +=+((i in gameStr)? '+': '-')
+        return tmpStr
+        }
+
+   clicked=(props)=> {
+      console.log('mv '+props.move)
+      if (this.state.gameView[props.move]!=='')
+         return
+      let {gameView,gameLog} ={...this.state}
+      gameView[props.move] = (this.state.gameLog.length %2)  ? 'O' : 'X'
+      gameLog+=props.move
+      this.setState({gameView,gameLog})  // This changes view
+
+      console.log(`After edit: ${JSON.stringify(this.state)}`)
+    }
+   render() {
+      return<div className ='shell'><div className="buttons"  onClick={this.switch_game}><button type="button" className="button" onClick={this.start_game}>Start</button>
+               <button className="button" type="button">Switch</button></div> <div className="wrapper">
+            {
+            // Need to use classes here
+               this.ref2.map((key) => {
+                  return <div className="box" id={key} onClick={() => { this.clicked({move: key})}}>
+                      {this.state.gameView[key]}</div>
+            })
+         } </div></div>
+         }
+
+}
+ReactDOM.render(<TicTac />,document.querySelector('.boundary') )
+
+</script>
